@@ -23,16 +23,16 @@ namespace BankApplication
                     switch (choice)
                     {
                         case 1:
-                             // OpenAccount
+                            OpenAccount();
                             break;
                         case 2:
-                             // Withdraw
+                            Withdraw();
                             break;
                         case 3:
-                            // Put
+                            Put();
                             break;
                         case 4:
-                            // CloseAccount
+                            CloseAccount();
                             break;
                         case 5:
                             break;
@@ -50,6 +50,46 @@ namespace BankApplication
                     Console.ForegroundColor = color;
                 }
             }
+        }
+        
+        private static void OpenAccount()
+        {
+            Console.WriteLine("Specify the sum to create an account: ");
+            decimal sum = Convert.ToDecimal(Console.ReadLine());
+
+            Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
+            // var type = Enum.Parse<>(Console.ReadLine()!);
+            // handle open
+        }
+
+        private static void Withdraw()
+        {
+            Console.WriteLine("Specify the sum to withdraw from the account: ");
+            decimal sum = Convert.ToDecimal(Console.ReadLine());
+
+            Console.WriteLine("Enter account id: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            // Withdraw;
+        }
+
+        private static void Put()
+        {
+            Console.WriteLine("Specify the sum to put on the account: ");
+            decimal sum = Convert.ToDecimal(Console.ReadLine());
+
+            Console.WriteLine("Enter account id: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            // Put
+        }
+        
+        private static void CloseAccount()
+        {
+            Console.WriteLine("Enter the account id to close: ");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            // Close
         }
     }
 }
