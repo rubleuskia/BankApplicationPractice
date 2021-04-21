@@ -1,9 +1,12 @@
 ﻿using System;
+using BankLibrary;
 
 namespace BankApplication
 {
     class Program
     {
+        private static Bank<Account> _bank1 = new Bank<Account>();
+        
         static void Main(string[] args)
         {
             bool alive = true;
@@ -58,8 +61,14 @@ namespace BankApplication
             decimal sum = Convert.ToDecimal(Console.ReadLine());
 
             Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
-            // var type = Enum.Parse<>(Console.ReadLine()!);
-            // handle open
+            var type = Enum.Parse<AccountType>(Console.ReadLine()!);
+            
+            _bank1.OpenAccount(new OpenAccountParameters
+            {
+                Amount = sum,
+                Type = type,
+                AccountCreated = NotifyAccountCreated
+            });
         }
 
         private static void Withdraw()
@@ -90,6 +99,11 @@ namespace BankApplication
             int id = Convert.ToInt32(Console.ReadLine());
 
             // Close
+        }
+
+        private static void NotifyAccountCreated(string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }
