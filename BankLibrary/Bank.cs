@@ -10,8 +10,9 @@ namespace BankLibrary
 
         public void OpenAccount(OpenAccountParameters parameters)
         {
-            // TODO: check types compatibility
-            CreateAccount(parameters, () => parameters.Type == AccountType.Deposit 
+            CheckValidTypeAccount(parameters.Type);
+
+            CreateAccount(parameters, () => parameters.Type == AccountType.Deposit
                 ? new DepositAccount(parameters.Amount) as T
                 : new OnDemandAccount(parameters.Amount) as T);
         }
@@ -19,7 +20,7 @@ namespace BankLibrary
         public void Withdraw(decimal amount, int id)
         {
             var account = GetAccountById(id);
-            
+
             if (account is DepositAccount depositAccount)
             {
                 depositAccount.Withdraw(amount);
@@ -27,10 +28,10 @@ namespace BankLibrary
             else
             {
                 account.Withdraw(amount);
-            } 
+            }
         }
 
-        public void Put (decimal amount, int id)
+        public void Put(decimal amount, int id)
         {
             var account = GetAccountById(id);
             account.Put(amount);
@@ -68,6 +69,15 @@ namespace BankLibrary
             }
 
             return account;
+        }
+
+        private void CheckValidTypeAccount(AccountType inputType)
+        {
+            if ((typeof(T) == typeof(DepositAccount) && inputType != AccountType.Deposit) ||
+               (typeof(T) == typeof(OnDemandAccount) && inputType != AccountType.OnDemand))
+            {
+                throw new InvalidOperationException($"Invalid account type: {inputType}");
+            }
         }
     }
 }
