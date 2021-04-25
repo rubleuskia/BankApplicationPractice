@@ -1,9 +1,12 @@
 ﻿using System;
+using BankLibrary;
 
 namespace BankApplication
 {
     class Program
     {
+        private static Bank<Account> _bank = new Bank<Account>();
+
         static void Main(string[] args)
         {
             bool alive = true;
@@ -40,7 +43,8 @@ namespace BankApplication
                             alive = false;
                             continue;
                     }
-                    // CalculatePercentage
+                    
+                    _bank.CalculatePercentage();
                 }
                 catch (Exception ex)
                 {
@@ -51,15 +55,27 @@ namespace BankApplication
                 }
             }
         }
-        
+
         private static void OpenAccount()
         {
             Console.WriteLine("Specify the sum to create an account: ");
             decimal sum = Convert.ToDecimal(Console.ReadLine());
 
             Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
-            // var type = Enum.Parse<>(Console.ReadLine()!);
-            // handle open
+           
+            AccountType type = Enum.Parse<AccountType>(Console.ReadLine()!);
+
+            _bank.OpenAccount(new OpenAccountParameters
+            {
+                Amount = sum,
+                Type = type,
+                AccountCreated = NotifyAccountCreated,
+            });
+
+            type = (AccountType) Convert.ToInt32(Console.ReadLine());
+            type = type == (AccountType) 2 ? AccountType.Deposit : AccountType.Ordinary;
+
+            _bank.OpenAccount(type, sum);
         }
 
         private static void Withdraw()
@@ -70,6 +86,7 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
+            _bank.Withdraw(sum, id);
             // Withdraw;
         }
 
@@ -81,15 +98,21 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
+            _bank.Put(sum, id);
             // Put
         }
-        
+
         private static void CloseAccount()
         {
             Console.WriteLine("Enter the account id to close: ");
             int id = Convert.ToInt32(Console.ReadLine());
-
+            _bank.Close(id);
             // Close
+        }
+
+        private static void NotifyAccountCreated(string message)
+        {
+            Console.WriteLine(message);
         }
     }
 }
