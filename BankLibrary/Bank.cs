@@ -36,12 +36,19 @@ namespace BankLibrary
             account.Put(amount);
         }
 
+        public void Close(int id)
+        {
+            var account = GetAccountById(id);
+            account.Close();
+        }
+
         private void CreateAccount(OpenAccountParameters parameters, Func<T> creator)
         {
             var account = creator();
             account.Created += parameters.AccountCreated;
             account.WithdrawMoney += parameters.WithdrawMoney;
             account.PutMoney += parameters.PutMoney;
+            account.AccountClosed += parameters.AccountClosed;
             account.Open();
             _accounts.Add(account);
         }

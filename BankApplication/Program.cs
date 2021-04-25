@@ -69,7 +69,8 @@ namespace BankApplication
                 Type = type,
                 AccountCreated = Notify,
                 WithdrawMoney = Notify,
-                PutMoney = Notify
+                PutMoney = Notify,
+                AccountClosed = Notify
             });
         }
 
@@ -100,7 +101,7 @@ namespace BankApplication
             Console.WriteLine("Enter the account id to close: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Close
+            _bank.Close(id);
         }
 
         private static void Notify (string message)

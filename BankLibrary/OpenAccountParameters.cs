@@ -11,5 +11,7 @@ namespace BankLibrary
         public WriteOutput WithdrawMoney { get; set; }
 
         public WriteOutput PutMoney { get; set; }
+
+        public WriteOutput AccountClosed { get; set; }
     }
 }

@@ -15,6 +15,7 @@ namespace BankLibrary
         public event WriteOutput Created;
         public event WriteOutput WithdrawMoney;
         public event WriteOutput PutMoney;
+        public event WriteOutput AccountClosed;
 
         public Account(decimal amount)
         {
@@ -37,6 +38,7 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
     
             _state = AccountState.Closed;
+            AccountClosed?.Invoke("Account closed.");
         }
         
         public virtual void Put(decimal amount)
