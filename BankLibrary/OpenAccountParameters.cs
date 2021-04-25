@@ -6,6 +6,8 @@ namespace BankLibrary
         
         public decimal Amount { get; set; }
 
-        public AccountCreated AccountCreated { get; set; }
+        public WriteOutput AccountCreated { get; set; }
+
+        public WriteOutput WithdrawMoney { get; set; }
     }
 }

@@ -2,7 +2,7 @@ using System;
 
 namespace BankLibrary
 {
-    public delegate void AccountCreated(string message);
+    public delegate void WriteOutput(string message);
     
     public abstract class Account
     {
@@ -12,7 +12,8 @@ namespace BankLibrary
         private int _days = 0;
         private AccountState _state;
 
-        public event AccountCreated Created;
+        public event WriteOutput Created;
+        public event WriteOutput WithdrawMoney;
 
         public Account(decimal amount)
         {
@@ -54,6 +55,7 @@ namespace BankLibrary
             }
 
             _amount -= amount;
+            WithdrawMoney?.Invoke($"You withdraw {amount}. Account balance: {_amount}");
         }
         
         public abstract AccountType Type { get; }

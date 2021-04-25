@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BankLibrary
 {
@@ -10,16 +11,33 @@ namespace BankLibrary
         public void OpenAccount(OpenAccountParameters parameters)
         {
             // TODO: check types compatibility
-            CreateAccount(parameters.AccountCreated, () => parameters.Type == AccountType.Deposit 
+            CreateAccount(parameters, () => parameters.Type == AccountType.Deposit 
                 ? new DepositAccount(parameters.Amount) as T
                 : new OnDemandAccount(parameters.Amount) as T);
         }
 
-        private void CreateAccount(AccountCreated accountCreated, Func<T> creator)
+        public void Withdraw(decimal amount, int id)
+        {
+            //TODO: check types compatibility
+            var account = _accounts.Where(x => x.Id == id).First();
+            
+
+            if (account is DepositAccount depositAccount)
+            {
+                depositAccount.Withdraw(amount);
+            }
+            else
+            {
+                account.Withdraw(amount);
+            } 
+        }
+
+        private void CreateAccount(OpenAccountParameters parameters, Func<T> creator)
         {
             var account = creator();
+            account.Created += parameters.AccountCreated;
+            account.WithdrawMoney += parameters.WithdrawMoney;
             account.Open();
-            account.Created += accountCreated;
             _accounts.Add(account);
         }
     }

@@ -5,14 +5,14 @@ namespace BankApplication
 {
     class Program
     {
-        private static Bank<Account> _bank1 = new Bank<Account>();
+        private static Bank<Account> _bank = new Bank<Account>();
         
         static void Main(string[] args)
         {
             bool alive = true;
             while (alive)
             {
-                Console.Clear();
+             //   Console.Clear();
                 ConsoleColor color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine("1. Open Account \t 2. Withdraw sum \t 3. Add sum");
@@ -63,11 +63,12 @@ namespace BankApplication
             Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
             var type = Enum.Parse<AccountType>(Console.ReadLine()!);
             
-            _bank1.OpenAccount(new OpenAccountParameters
+            _bank.OpenAccount(new OpenAccountParameters
             {
                 Amount = sum,
                 Type = type,
-                AccountCreated = NotifyAccountCreated
+                AccountCreated = Notify,
+                WithdrawMoney = Notify
             });
         }
 
@@ -79,7 +80,7 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Withdraw;
+            _bank.Withdraw(sum, id);
         }
 
         private static void Put()
@@ -101,7 +102,7 @@ namespace BankApplication
             // Close
         }
 
-        private static void NotifyAccountCreated(string message)
+        private static void Notify (string message)
         {
             Console.WriteLine(message);
         }
