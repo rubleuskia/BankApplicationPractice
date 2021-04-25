@@ -18,10 +18,8 @@ namespace BankLibrary
 
         public void Withdraw(decimal amount, int id)
         {
-            //TODO: check types compatibility
-            var account = _accounts.Where(x => x.Id == id).First();
+            var account = GetAccountById(id);
             
-
             if (account is DepositAccount depositAccount)
             {
                 depositAccount.Withdraw(amount);
@@ -32,6 +30,12 @@ namespace BankLibrary
             } 
         }
 
+        public void Put (decimal amount, int id)
+        {
+            var account = GetAccountById(id);
+            account.Put(amount);
+        }
+
         private void CreateAccount(OpenAccountParameters parameters, Func<T> creator)
         {
             var account = creator();
@@ -39,6 +43,18 @@ namespace BankLibrary
             account.WithdrawMoney += parameters.WithdrawMoney;
             account.Open();
             _accounts.Add(account);
+        }
+
+        private Account GetAccountById(int id)
+        {
+            var account = _accounts.Where(x => x.Id == id).First();
+
+            if (account == null)
+            {
+                throw new InvalidOperationException("Account with the entered id does not exist");
+            }
+
+            return account;
         }
     }
 }

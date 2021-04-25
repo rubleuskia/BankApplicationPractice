@@ -91,7 +91,7 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Put
+            _bank.Put(sum, id);
         }
         
         private static void CloseAccount()
