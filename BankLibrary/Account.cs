@@ -18,6 +18,12 @@ namespace BankLibrary
         public event WriteOutput PutMoney;
         public event WriteOutput AccountClosed;
 
+        public abstract AccountType Type { get; }
+
+        protected int Days => _days;
+
+        public int Id => _id;
+
         public Account(decimal amount)
         {
             _amount = amount;
@@ -63,8 +69,12 @@ namespace BankLibrary
             _amount -= amount;
             WithdrawMoney?.Invoke($"You withdraw {amount}. Account balance: {_amount}");
         }
-        
-        public abstract AccountType Type { get; }
+
+        public void IncrementDays()
+        {
+            _days++;
+            InterestAccrual();
+        }
 
         private void AssertValidState(AccountState validState)
         {
@@ -72,15 +82,6 @@ namespace BankLibrary
             {
                 throw new InvalidOperationException($"Invalid account state: {_state}");
             }
-        }
-
-        protected int Days => _days;
-        public int Id => _id;
-
-        public void IncrementDays()
-        {
-            _days++;
-            InterestAccrual();
         }
 
         private void InterestAccrual()

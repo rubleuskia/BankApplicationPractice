@@ -12,7 +12,7 @@ namespace BankApplication
             bool alive = true;
             while (alive)
             {
-             //   Console.Clear();
+                //Console.Clear();
                 ConsoleColor color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine("1. Open Account \t 2. Withdraw sum \t 3. Add sum");
@@ -44,7 +44,6 @@ namespace BankApplication
                             alive = false;
                             continue;
                     }
-                    // CalculatePercentage
                 }
                 catch (Exception ex)
                 {
