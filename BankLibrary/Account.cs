@@ -11,7 +11,7 @@ namespace BankLibrary
         private int _id;
         private int _days = 0;
         private AccountState _state;
-        private readonly int _interest = 10;
+        private readonly int _interest = 1;
 
         public event WriteOutput Created;
         public event WriteOutput WithdrawMoney;
@@ -86,10 +86,7 @@ namespace BankLibrary
 
         private void InterestAccrual()
         {
-            if (_days % 30 == 0)
-            {
-                _amount += _amount * _interest / 100;
-            }
+                _amount += _amount * _interest / 100;          
         }
     }
 }
