@@ -38,6 +38,7 @@ namespace BankApplication
                             CloseAccount();
                             break;
                         case 5:
+                            SkipDay();
                             break;
                         case 6:
                             alive = false;
@@ -102,6 +103,11 @@ namespace BankApplication
             int id = Convert.ToInt32(Console.ReadLine());
 
             _bank.Close(id);
+        }
+
+        private static void SkipDay()
+        {
+            _bank.IncrementDays();
         }
 
         private static void Notify (string message)

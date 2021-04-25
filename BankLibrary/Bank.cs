@@ -42,6 +42,11 @@ namespace BankLibrary
             account.Close();
         }
 
+        public void IncrementDays()
+        {
+            _accounts.ForEach(x => x.IncrementDays());
+        }
+
         private void CreateAccount(OpenAccountParameters parameters, Func<T> creator)
         {
             var account = creator();
