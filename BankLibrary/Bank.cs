@@ -41,13 +41,14 @@ namespace BankLibrary
             var account = creator();
             account.Created += parameters.AccountCreated;
             account.WithdrawMoney += parameters.WithdrawMoney;
+            account.PutMoney += parameters.PutMoney;
             account.Open();
             _accounts.Add(account);
         }
 
         private Account GetAccountById(int id)
         {
-            var account = _accounts.Where(x => x.Id == id).First();
+            var account = _accounts.Where(x => x.Id == id).FirstOrDefault();
 
             if (account == null)
             {

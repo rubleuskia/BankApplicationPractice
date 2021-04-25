@@ -68,7 +68,8 @@ namespace BankApplication
                 Amount = sum,
                 Type = type,
                 AccountCreated = Notify,
-                WithdrawMoney = Notify
+                WithdrawMoney = Notify,
+                PutMoney = Notify
             });
         }
 

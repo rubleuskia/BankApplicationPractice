@@ -14,6 +14,7 @@ namespace BankLibrary
 
         public event WriteOutput Created;
         public event WriteOutput WithdrawMoney;
+        public event WriteOutput PutMoney;
 
         public Account(decimal amount)
         {
@@ -43,6 +44,8 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
 
             _amount += amount;
+
+            PutMoney?.Invoke($"You put: {amount}. Account balance: {_amount}");
         }
         
         public virtual void Withdraw(decimal amount)

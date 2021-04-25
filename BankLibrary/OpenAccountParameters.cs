@@ -9,5 +9,7 @@ namespace BankLibrary
         public WriteOutput AccountCreated { get; set; }
 
         public WriteOutput WithdrawMoney { get; set; }
+
+        public WriteOutput PutMoney { get; set; }
     }
 }
