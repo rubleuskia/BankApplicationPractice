@@ -5,8 +5,8 @@ namespace BankApplication
 {
     class Program
     {
-        private static Bank<Account> _bank1 = new Bank<Account>();
-        
+
+        private static Bank<Account> _bank = new Bank<Account>();
         static void Main(string[] args)
         {
             bool alive = true;
@@ -38,12 +38,15 @@ namespace BankApplication
                             CloseAccount();
                             break;
                         case 5:
+                            SkipDay();
                             break;
                         case 6:
                             alive = false;
                             continue;
                     }
+                    Console.ReadKey();
                     // CalculatePercentage
+
                 }
                 catch (Exception ex)
                 {
@@ -54,7 +57,7 @@ namespace BankApplication
                 }
             }
         }
-        
+
         private static void OpenAccount()
         {
             Console.WriteLine("Specify the sum to create an account: ");
@@ -62,8 +65,8 @@ namespace BankApplication
 
             Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
             var type = Enum.Parse<AccountType>(Console.ReadLine()!);
-            
-            _bank1.OpenAccount(new OpenAccountParameters
+
+            _bank.OpenAccount(new OpenAccountParameters
             {
                 Amount = sum,
                 Type = type,
@@ -79,6 +82,12 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
+            _bank.WithdrawAccaunt(new WithdrawAccountParametrs
+            {
+                Amount = sum,
+                Id = id - 1,
+                WithdrawAccount = NotifyAccountCreated,
+            });
             // Withdraw;
         }
 
@@ -90,15 +99,30 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
+            _bank.PutAmount(new PutAccountParameters
+            {
+                Amount = sum,
+                Id = id - 1,
+                PutAccount = NotifyAccountCreated
+            });
             // Put
         }
-        
+
         private static void CloseAccount()
         {
             Console.WriteLine("Enter the account id to close: ");
             int id = Convert.ToInt32(Console.ReadLine());
-
+            _bank.ClosedAccount(new ClosedAccountParameters
+            {
+                Id = id - 1,
+                AccountCloser = NotifyAccountCreated
+            });
             // Close
+        }
+
+        private static void SkipDay()
+        {
+            _bank.SkipDay(new SkipDayParametrs { });
         }
 
         private static void NotifyAccountCreated(string message)
@@ -107,3 +131,4 @@ namespace BankApplication
         }
     }
 }
+

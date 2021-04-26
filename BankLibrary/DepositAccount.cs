@@ -4,8 +4,8 @@ namespace BankLibrary
 {
     public class DepositAccount : Account
     {
-        public DepositAccount(decimal amount) 
-            : base(amount)
+        public DepositAccount(decimal amount)
+      : base(amount)
         {
         }
 
@@ -15,9 +15,9 @@ namespace BankLibrary
         {
             if (Days / 30 == 0)
             {
-                throw new InvalidOperationException("Cannot withdraw money.");
+                throw new InvalidOperationException($"Cannot withdraw money. Withdraw money through {30 - Days} day(s)");
             }
-            
+
             base.Withdraw(amount);
         }
     }

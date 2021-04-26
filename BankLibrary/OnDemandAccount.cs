@@ -2,11 +2,10 @@ namespace BankLibrary
 {
     public class OnDemandAccount : Account
     {
-        public OnDemandAccount(decimal amount) 
-            : base(amount)
+        public OnDemandAccount(decimal amound) 
+            : base(amound)
         {
         }
-
         public override AccountType Type => AccountType.OnDemand;
     }
 }
