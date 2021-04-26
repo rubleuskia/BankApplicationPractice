@@ -6,13 +6,12 @@ namespace BankApplication
     class Program
     {
         private static Bank<Account> _bank1 = new Bank<Account>();
-        
+
         static void Main(string[] args)
         {
             bool alive = true;
             while (alive)
             {
-                Console.Clear();
                 ConsoleColor color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine("1. Open Account \t 2. Withdraw sum \t 3. Add sum");
@@ -38,12 +37,12 @@ namespace BankApplication
                             CloseAccount();
                             break;
                         case 5:
+                            NextDay();
                             break;
                         case 6:
                             alive = false;
                             continue;
                     }
-                    // CalculatePercentage
                 }
                 catch (Exception ex)
                 {
@@ -54,20 +53,32 @@ namespace BankApplication
                 }
             }
         }
-        
+
+        private static void NextDay()
+        {
+            _bank1.IncrementDay();
+        }
+
         private static void OpenAccount()
         {
             Console.WriteLine("Specify the sum to create an account: ");
             decimal sum = Convert.ToDecimal(Console.ReadLine());
 
             Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
-            var type = Enum.Parse<AccountType>(Console.ReadLine()!);
-            
+            var type = Enum.Parse<AccountType>(Console.ReadLine());
+
+            Console.WriteLine("Enter percentage: ");
+            decimal percentage = Convert.ToDecimal(Console.ReadLine());
+
+            var bankType = Enum.Parse<BankType>(_bank1.GetType().GetGenericArguments()[0].Name);
+
             _bank1.OpenAccount(new OpenAccountParameters
             {
                 Amount = sum,
                 Type = type,
-                AccountCreated = NotifyAccountCreated
+                BankType = bankType,
+                Percentage = percentage,
+                AccountCreated = Notify
             });
         }
 
@@ -79,7 +90,12 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Withdraw;
+            _bank1.WithdrawMoney(new WithdrawAccountParameters
+            {
+                Amount = sum,
+                Id = id,
+                MoneyWithdrawn = Notify
+            });
         }
 
         private static void Put()
@@ -90,7 +106,12 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Put
+            _bank1.PutAmount(new PutAccountParameters
+            {
+                Amount = sum,
+                Id = id,
+                MoneyPutted = Notify
+            });
         }
         
         private static void CloseAccount()
@@ -98,10 +119,14 @@ namespace BankApplication
             Console.WriteLine("Enter the account id to close: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Close
+            _bank1.ClosedAccount(new CloseAccountParameters
+            { 
+                Id =id,
+                AccountClosed = Notify
+            });
         }
 
-        private static void NotifyAccountCreated(string message)
+        private static void Notify(string message)
         {
             Console.WriteLine(message);
         }
