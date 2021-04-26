@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Generics", "Generics\Generics.csproj", "{C093B5D3-0162-4C2F-9946-9D5340DAFAE5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{18526A51-C917-4614-8755-7A0F320766B2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C093B5D3-0162-4C2F-9946-9D5340DAFAE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C093B5D3-0162-4C2F-9946-9D5340DAFAE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C093B5D3-0162-4C2F-9946-9D5340DAFAE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C093B5D3-0162-4C2F-9946-9D5340DAFAE5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18526A51-C917-4614-8755-7A0F320766B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18526A51-C917-4614-8755-7A0F320766B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18526A51-C917-4614-8755-7A0F320766B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18526A51-C917-4614-8755-7A0F320766B2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
