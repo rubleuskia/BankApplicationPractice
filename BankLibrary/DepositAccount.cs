@@ -7,6 +7,7 @@ namespace BankLibrary
         public DepositAccount(decimal amount) 
             : base(amount)
         {
+             
         }
 
         public override AccountType Type => AccountType.Deposit;
@@ -19,6 +20,7 @@ namespace BankLibrary
             }
             
             base.Withdraw(amount);
+           
         }
     }
 }
