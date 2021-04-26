@@ -3,16 +3,19 @@ using System;
 namespace BankLibrary
 {
     public delegate void AccountCreated(string message);
-    
+    public delegate void Account—hangedStateSum();
+
     public abstract class Account
     {
         private static int _counter = 0;
-        private decimal _amount;
+        public decimal _amount;
         private int _id;
         private int _days = 0;
         private AccountState _state;
+        public abstract AccountType Type { get; }
 
         public event AccountCreated Created;
+        public event Account—hangedStateSum —hangedStateSum;
 
         public Account(decimal amount)
         {
@@ -29,21 +32,23 @@ namespace BankLibrary
             IncrementDays();
             Created?.Invoke("Account created.");
         }
-        
+
         public virtual void Close()
         {
             AssertValidState(AccountState.Opened);
-    
+
             _state = AccountState.Closed;
+            —hangedStateSum();
         }
-        
+
         public virtual void Put(decimal amount)
         {
             AssertValidState(AccountState.Opened);
 
             _amount += amount;
+            —hangedStateSum();
         }
-        
+
         public virtual void Withdraw(decimal amount)
         {
             AssertValidState(AccountState.Opened);
@@ -51,12 +56,17 @@ namespace BankLibrary
             if (_amount < amount)
             {
                 throw new InvalidOperationException("Not enough money");
+
             }
 
-            _amount -= amount;
+            _amount = _amount - amount;
+            —hangedStateSum();
         }
-        
-        public abstract AccountType Type { get; }
+
+        public void AccrualOfPercent(decimal Percent)
+        {
+            _amount= _amount+ ((_amount /100) * Percent);
+        }
 
         private void AssertValidState(AccountState validState)
         {
@@ -73,5 +83,6 @@ namespace BankLibrary
         {
             _days++;
         }
+
     }
 }

@@ -9,8 +9,10 @@ namespace BankApplication
         
         static void Main(string[] args)
         {
+
             bool alive = true;
             while (alive)
+
             {
                 Console.Clear();
                 ConsoleColor color = Console.ForegroundColor;
@@ -38,6 +40,7 @@ namespace BankApplication
                             CloseAccount();
                             break;
                         case 5:
+                            SkipDay();
                             break;
                         case 6:
                             alive = false;
@@ -63,12 +66,8 @@ namespace BankApplication
             Console.WriteLine("Select an account type: \n 1. On-Demand \n 2. Deposit");
             var type = Enum.Parse<AccountType>(Console.ReadLine()!);
             
-            _bank1.OpenAccount(new OpenAccountParameters
-            {
-                Amount = sum,
-                Type = type,
-                AccountCreated = NotifyAccountCreated
-            });
+            _bank1.OpenAccount(new OpenAccountParameters { Amount = sum,Type = type, AccountCreated = NotifyAccountCreated  });
+   
         }
 
         private static void Withdraw()
@@ -79,7 +78,8 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Withdraw;
+            _bank1.Withdraw(new Withdraw {_amount = sum, _id = id-1});
+            
         }
 
         private static void Put()
@@ -90,15 +90,21 @@ namespace BankApplication
             Console.WriteLine("Enter account id: ");
             int id = Convert.ToInt32(Console.ReadLine());
 
-            // Put
+            _bank1.Put(new Put { _amount = sum, _id = id - 1 });
+            
         }
         
         private static void CloseAccount()
         {
             Console.WriteLine("Enter the account id to close: ");
             int id = Convert.ToInt32(Console.ReadLine());
+            _bank1.CloseAccount(id-1);
+        }
 
-            // Close
+        private static void SkipDay()
+        {
+            _bank1.SkipDay();
+            Console.ReadKey();
         }
 
         private static void NotifyAccountCreated(string message)
