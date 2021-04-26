@@ -1,103 +1,84 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace BankLibrary
 {
     public class Bank<T> where T : Account
     {
-        
-        private readonly List<Account> _accounts = new();
+        public Action<string> _writeOutput;
 
+        private readonly List<T> _accounts = new();
+
+        public Bank(Action<string> writeOutput)
+        {
+            _writeOutput = writeOutput;
+        }
         public void OpenAccount(OpenAccountParameters parameters)
         {
-            // TODO: check types compatibility
-            CreateAccount(parameters.AccountCreated, () => parameters.Type == AccountType.Deposit
-                ? new DepositAccount(parameters.Amount, parameters.Percentage) as T
-                : new OnDemandAccount(parameters.Amount, parameters.Percentage) as T);
+            AssertValidType(parameters.Type);
+            CreateAccount(parameters.AccountNotify, () => parameters.Type == AccountType.Deposit
+                ? new DepositAccount(parameters.Amount) as T
+                : new OnDemandAccount(parameters.Amount) as T);
         }
 
-        private void CreateAccount(AccountCreated accountCreated, Func<T> creator)
+        private static void AssertValidType(AccountType type)
+        {
+            var itemType = typeof(T);
+            if (itemType != typeof(Account) && ((type == AccountType.Deposit && itemType != typeof(DepositAccount))
+                                           || (type == AccountType.OnDemand && itemType != typeof(OnDemandAccount))))
+            {
+                throw new InvalidOperationException("Ivalid account type.");
+            }
+
+        }
+
+        private void CreateAccount(AccountNotification accountNotify, Func<T> creator)
         {
             var account = creator();
+            account.Notify += accountNotify;
             account.Open();
-            account.Created += accountCreated;
+
             _accounts.Add(account);
         }
-
-        public void Put(decimal sum, int id)
+        public void Withdraw(int id, decimal amount)
         {
-            var account = FindAccount(id);
-            if (account == null)
-                throw new Exception("Account didn't find");
-            account.Put(sum);
+            AssertValidId(id--);
+            _accounts[id].Withdraw(amount);
         }
 
-        public void Withdraw(decimal sum, int id)
+        private void AssertValidId(int id)
         {
-            var account = FindAccount(id);
-            if (account == null)
-                throw new Exception("Account didn't find");
-            account.Withdraw(sum);
-        }
-        
-        public void Close(int id)
-        {
-            var _accounts = FindAccount(id, out var index);
-            if (_accounts == null)
-                throw new Exception("Account didn't find");
-
-            _accounts.Close();
-
-            if (_accounts.Length <= 1)
-                _accounts = null;
-            else
+            if (id < 1 || id > _accounts.Count)
             {
-                
-                var tempAccounts = new T[_accounts.Length - 1];
-                for (int i = 0, j = 0; i < _accounts.Length; i++)
-                {
-                    if (i != index)
-                        tempAccounts[j++] = (T)this._accounts[i];
-                }
+                throw new InvalidOperationException("Not valid Id");
             }
         }
 
-        
-        public void CalculatePercentage()
+        public void Put(int id, decimal amount)
         {
-            if (_accounts == null)
-                return;
-            foreach (var t in _accounts)
-            {
-                t.IncrementDays();
-                t.Calculate();
-            }
+            AssertValidId(id--);
+            _accounts[id].Put(amount);
         }
 
-        
-        public T FindAccount(int id)
+        public void CloseAccount(int id)
         {
-            return _accounts.Where(t => t.Id == id).Cast<T>().FirstOrDefault();
-        }
-        
-        public T FindAccount(int id, out int index)
-        {
-            for (int i = 0; i < _accounts.Count; i++)
-            {
-                if (_accounts[i].Id == id)
-                {
-                    index = i;
-                    return (T)_accounts[i];
-                }
-            }
-            index = -1;
-            return null;
+            AssertValidId(id--);
+            _accounts[id].Close();
         }
 
-        public void OpenAccount(AccountType parameters, decimal sum)
+        public void DisplayAccounts()
         {
-            throw new NotImplementedException();
+            foreach (var item in _accounts)
+            {
+                _writeOutput?.Invoke($"{item}");
+            }
+        }
+        public void IncrementDays()
+        {
+            foreach (var item in _accounts)
+            {
+                item.IncrementDays();
+            }
         }
     }
 }

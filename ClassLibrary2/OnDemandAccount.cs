@@ -2,18 +2,16 @@
 {
     public class OnDemandAccount : Account
     {
-        public OnDemandAccount(decimal amount, int percentage)
-            : base(amount, percentage)
+        public OnDemandAccount(decimal amount)
+            : base(amount)
         {
         }
 
         public override AccountType Type => AccountType.OnDemand;
 
-        
-        internal override void Calculate()
+        internal override decimal CalculatePercentages(decimal amount)
         {
-            throw new System.NotImplementedException();
+            return (amount / 20) + amount;
         }
-
     }
 }

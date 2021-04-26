@@ -6,7 +6,6 @@
 
         public decimal Amount { get; set; }
 
-        public AccountCreated AccountCreated { get; set; }
-        public int Percentage { get; set; }
+        public AccountNotification AccountNotify { get; set; }
     }
 }

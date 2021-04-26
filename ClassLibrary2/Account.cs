@@ -2,32 +2,44 @@
 
 namespace BankLibrary
 {
-    public delegate void AccountCreated(string message);
+    public delegate void AccountNotification(string message);
 
     public abstract class Account
     {
-        private static int _counter = 0;
+        private static int s_counter;
         private decimal _amount;
-        private int _id;
-        private int _days = 0;
+        protected int Days { get; private set; }
+        protected int Id { get; }
         private AccountState _state;
+        public abstract AccountType Type { get; }
+        public event AccountNotification Notify;
 
-        public event AccountCreated Created;
 
-        public Account(decimal amount, int percentage)
+        public override string ToString()
+        {
+            if (_state != AccountState.Closed)
+            {
+                return $"{Id}. {Type} {_amount} money, {Days} days";
+            }
+            else
+            {
+                return $"{Id}. {Type} {_state}";
+            }
+        }
+
+        public Account(decimal amount)
         {
             _amount = amount;
             _state = AccountState.Created;
-            _id = ++_counter;
+            Id = ++s_counter;
         }
 
-        protected internal virtual void Open()
+        public virtual void Open()
         {
             AssertValidState(AccountState.Created);
 
             _state = AccountState.Opened;
-            IncrementDays();
-            Created?.Invoke("Account created.");
+            Notify?.Invoke("Account created.");
         }
 
         public virtual void Close()
@@ -35,8 +47,8 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
 
             _state = AccountState.Closed;
-            IncrementDays();
-            Created?.Invoke("Account closed.");
+
+            Notify?.Invoke("Account closed.");
         }
 
         public virtual void Put(decimal amount)
@@ -44,25 +56,24 @@ namespace BankLibrary
             AssertValidState(AccountState.Opened);
 
             _amount += amount;
-            IncrementDays();
-            Created?.Invoke("Account is topped up.");
+            Notify?.Invoke($"{amount} was added on account.");
         }
 
         public virtual void Withdraw(decimal amount)
         {
             AssertValidState(AccountState.Opened);
+            AssertValidAmount(amount);
+            _amount -= amount;
+            Notify?.Invoke($"{amount} was withdrawed from account");
+        }
 
+        private void AssertValidAmount(decimal amount)
+        {
             if (_amount < amount)
             {
                 throw new InvalidOperationException("Not enough money");
             }
-
-            _amount -= amount;
-            IncrementDays();
-            Created?.Invoke($"You have withdrawn an amount of {amount}. On your account remained {_amount}");
         }
-
-        public abstract AccountType Type { get; }
 
         private void AssertValidState(AccountState validState)
         {
@@ -72,19 +83,16 @@ namespace BankLibrary
             }
         }
 
-        protected int Days => _days;
-        public int Id => _id;
-
-        public int Length { get; internal set; }
-
         public void IncrementDays()
         {
-            _days++;
+            if (_state == AccountState.Opened)
+            {
+                Days++;
+                _amount = CalculatePercentages(_amount);
+            }
         }
 
-        internal virtual void Calculate()
-        {
-            throw new NotImplementedException();
-        }
+        internal abstract decimal CalculatePercentages(decimal amount);
+
     }
 }

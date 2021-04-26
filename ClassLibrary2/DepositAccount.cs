@@ -4,24 +4,11 @@ namespace BankLibrary
 {
     public class DepositAccount : Account
     {
-        public DepositAccount(decimal amount, int percentage)
-            : base(amount, percentage)
+        public DepositAccount(decimal amount) : base(amount)
         {
         }
 
         public override AccountType Type => AccountType.Deposit;
-
-        public override void Put(decimal sum)
-        {
-            if (Days % 30 == 0)
-                base.Put(sum);
-        }
-
-        internal override void Calculate()
-        {
-            if (Days % 30 == 0)
-                base.Calculate();
-        }
 
         public override void Withdraw(decimal amount)
         {
@@ -31,6 +18,11 @@ namespace BankLibrary
             }
 
             base.Withdraw(amount);
+        }
+
+        internal override decimal CalculatePercentages(decimal amount)
+        {
+            return (amount / 10) + amount;
         }
     }
 }

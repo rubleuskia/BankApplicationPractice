@@ -4,6 +4,5 @@
     {
         OnDemand = 1,
         Deposit = 2,
-        Ordinary,
     }
 }
