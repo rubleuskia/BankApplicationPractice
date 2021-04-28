@@ -54,6 +54,19 @@ namespace BankApplication
                 }
             }
         }
+
+        private static void GetLockerData()
+        {
+            Console.WriteLine("Specify ID");
+            int id = Convert.ToInt32(Console.ReadLine());
+
+            Console.WriteLine("Enter keyword:");
+            string keyword = Console.ReadLine();
+
+            var data1 = (int)_bank1.GetLockerData(id, keyword);
+            int data2 = _bank1.GetLockerData<int>(id + 2, keyword);
+            string data3 = _bank1.GetLockerData<string>(id + 1, keyword);
+        }
         
         private static void OpenAccount()
         {
