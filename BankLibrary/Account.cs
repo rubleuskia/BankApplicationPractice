@@ -2,8 +2,7 @@ using System;
 
 namespace BankLibrary
 {
-    public delegate void WriteOutput(string message);
-    
+
     public abstract class Account
     {
         private static int _counter = 0;
@@ -13,10 +12,10 @@ namespace BankLibrary
         private AccountState _state;
         private readonly int _interest = 1;
 
-        public event WriteOutput Created;
-        public event WriteOutput WithdrawMoney;
-        public event WriteOutput PutMoney;
-        public event WriteOutput AccountClosed;
+        public event Action<string> Created;
+        public event Action<string> WithdrawMoney;
+        public event Action<string> PutMoney;
+        public event Action<string> AccountClosed;
 
         public abstract AccountType Type { get; }
 
@@ -86,7 +85,7 @@ namespace BankLibrary
 
         private void InterestAccrual()
         {
-                _amount += _amount * _interest / 100;          
+            _amount += _amount * _interest / 100;          
         }
     }
 }

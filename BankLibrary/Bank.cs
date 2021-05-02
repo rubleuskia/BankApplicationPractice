@@ -20,15 +20,7 @@ namespace BankLibrary
         public void Withdraw(decimal amount, int id)
         {
             var account = GetAccountById(id);
-
-            if (account is DepositAccount depositAccount)
-            {
-                depositAccount.Withdraw(amount);
-            }
-            else
-            {
-                account.Withdraw(amount);
-            }
+            account.Withdraw(amount);
         }
 
         public void Put(decimal amount, int id)
@@ -61,7 +53,7 @@ namespace BankLibrary
 
         private Account GetAccountById(int id)
         {
-            var account = _accounts.Where(x => x.Id == id).FirstOrDefault();
+            var account = _accounts.Where(x => x.Id == id).SingleOrDefault();
 
             if (account == null)
             {
