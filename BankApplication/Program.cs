@@ -16,7 +16,7 @@ namespace BankApplication
                 ConsoleColor color = Console.ForegroundColor;
                 Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine("1. Open Account \t 2. Withdraw sum \t 3. Add sum");
-                Console.WriteLine("4. Close Account \t 5. Skip day \t 6. Exit program");
+                Console.WriteLine("4. Close Account \t 5. Skip day \t 6. Add locker \t 7. Get locker data \t 8. Exit program");
                 Console.WriteLine("Enter the item number:");
                 Console.ForegroundColor = color;
                 try
@@ -40,6 +40,12 @@ namespace BankApplication
                         case 5:
                             break;
                         case 6:
+                            AddLocker();
+                            break;
+                        case 7:
+                            GetLockerData();
+                            break;
+                        case 8:
                             alive = false;
                             continue;
                     }
@@ -55,6 +61,17 @@ namespace BankApplication
             }
         }
 
+        private static void AddLocker()
+        {
+            Console.WriteLine("Enter keyword:");
+            var keyword = Console.ReadLine();
+            
+            Console.WriteLine("Enter data:");
+            var data = Console.ReadLine();
+            
+            var id = _bank1.AddLocker(keyword, data);
+            Console.WriteLine($"Your id: {id}");
+        }
         private static void GetLockerData()
         {
             Console.WriteLine("Specify ID");
@@ -63,9 +80,7 @@ namespace BankApplication
             Console.WriteLine("Enter keyword:");
             string keyword = Console.ReadLine();
 
-            var data1 = (int)_bank1.GetLockerData(id, keyword);
-            int data2 = _bank1.GetLockerData<int>(id + 2, keyword);
-            string data3 = _bank1.GetLockerData<string>(id + 1, keyword);
+            Console.WriteLine(_bank1.GetLockerData(id, keyword));
         }
         
         private static void OpenAccount()

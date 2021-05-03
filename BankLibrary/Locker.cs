@@ -12,6 +12,12 @@ namespace BankLibrary
             _keyword = keyword;
             _data = data;
         }
+        
+        public Locker(int id, string keyword)
+        {
+            _id = id;
+            _keyword = keyword;
+        }
 
         public int Id => _id;
         public object Data => _data;
@@ -24,6 +30,21 @@ namespace BankLibrary
         public void RemoveData()
         {
             _data = null;
+        }
+
+        public override int GetHashCode()
+        {
+            return _id ^ _keyword.GetHashCode();
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (obj is Locker locker)
+            {
+                return _id == locker.Id && _keyword == locker._keyword;
+            }
+
+            return false;
         }
     }
 }
