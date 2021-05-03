@@ -8,7 +8,10 @@ namespace BankLibrary
         private object _data;
         private string _keyword;
         private int _id;
-
+        public void RemoveData()
+        {
+            _data = null;
+        }
         public Locker(int id, string keyword, object data)
         {
             _id = id;
@@ -24,34 +27,24 @@ namespace BankLibrary
     }
     public class Bank<T> where T : Account
     {
-        private List<Locker> _lockers = new();
-        public Action<string> _writeOutput;
-
+        private const string KgkPassPhrase = "CleanUp";
+        private Dictionary<Locker,object> _lockers = new();
         private readonly List<T> _accounts = new();
-
-        public Bank(Action<string> writeOutput)
-        {
-            _writeOutput = writeOutput;
-        }
-
         public int AddLocker(string keyword, object data)
         {
-
             var locker = new Locker(_lockers.Count + 1, keyword, data);
-            _lockers.Add(locker);
+            _lockers.Add(locker, data);
             return locker.Id;
         }
 
         public object GetLockerData(int id, string keyword)
         {
-
-            foreach (var locker in _lockers)
+            var tempLocker = new Locker(id, keyword);
+            if (_lockers.ContainsKey(tempLocker))
             {
-                if (locker.Matches(id, keyword))
-                {
-                    return locker.Data;
-                }
+                return _lockers[tempLocker];
             }
+
             throw new ArgumentOutOfRangeException($"Cannot find locker with id {id} or keyword does not match");
         }
 
@@ -59,6 +52,17 @@ namespace BankLibrary
         {
 
             return (TU)GetLockerData(id, keyword);
+        }
+
+        public void VisitKgk(string passPhrase)
+        {
+            if (passPhrase.Equals(KgkPassPhrase))
+            {
+                foreach (var locker in _lockers.Keys)
+                {
+                    locker.RemoveData();
+                }
+            }
         }
 
         public void OpenAccount(OpenAccountParameters parameters)
@@ -79,6 +83,7 @@ namespace BankLibrary
             }
 
         }
+
 
         private void CreateAccount(AccountStatus accountNotify, Func<T> creator)
         {
