@@ -3,104 +3,129 @@ using System.Collections.Generic;
 
 namespace BankLibrary
 {
+    public class Locker
+    {
+        private object _data;
+        private string _keyword;
+        private int _id;
+
+        public Locker(int id, string keyword, object data)
+        {
+            _id = id;
+            _keyword = keyword;
+            _data = data;
+        }
+        public int Id => _id;
+        public object Data => _data;
+        public bool Matches(int id, string keyword)
+        {
+            return id == _id && keyword.Equals(_keyword, StringComparison.Ordinal);
+        }
+    }
     public class Bank<T> where T : Account
     {
+        private List<Locker> _lockers = new();
+        public Action<string> _writeOutput;
+
         private readonly List<T> _accounts = new();
+
+        public Bank(Action<string> writeOutput)
+        {
+            _writeOutput = writeOutput;
+        }
+
+        public int AddLocker(string keyword, object data)
+        {
+
+            var locker = new Locker(_lockers.Count + 1, keyword, data);
+            _lockers.Add(locker);
+            return locker.Id;
+        }
+
+        public object GetLockerData(int id, string keyword)
+        {
+
+            foreach (var locker in _lockers)
+            {
+                if (locker.Matches(id, keyword))
+                {
+                    return locker.Data;
+                }
+            }
+            throw new ArgumentOutOfRangeException($"Cannot find locker with id {id} or keyword does not match");
+        }
+
+        public TU GetLockerData<TU>(int id, string keyword)
+        {
+
+            return (TU)GetLockerData(id, keyword);
+        }
 
         public void OpenAccount(OpenAccountParameters parameters)
         {
-            if (GetType().GetGenericArguments()[0] == typeof(DepositAccount))
+            AssertValidType(parameters.Type);
+            CreateAccount(parameters.AccountCreated, () => parameters.Type == AccountType.Deposit
+                ? new DepositAccount(parameters.Amount) as T
+                : new OnDemandAccount(parameters.Amount) as T);
+        }
+
+        private static void AssertValidType(AccountType type)
+        {
+            var itemType = typeof(T);
+            if (itemType != typeof(Account) && ((type == AccountType.Deposit && itemType != typeof(DepositAccount))
+                                           || (type == AccountType.OnDemand && itemType != typeof(OnDemandAccount))))
             {
-                if (parameters.Type == AccountType.OnDemand)
-                {
-                    throw new InvalidOperationException(" Credit bank, you cannot create an on demand account");
-                }
-                CreateAccount(parameters.AccountCreated, () => new DepositAccount(parameters.Amount) as T);
+                throw new InvalidOperationException("Ivalid account type.");
             }
-            else
-            {
-                // TODO: check types compatibility
-                CreateAccount(parameters.AccountCreated, () => parameters.Type == AccountType.Deposit
-                    ? new DepositAccount(parameters.Amount) as T
-                    : new OnDemandAccount(parameters.Amount) as T);
-            }
-        }
-
-        public void ClosedAccount(ClosedAccountParameters parameters)
-        {
-            ExecuteOnAccount(status =>
-            {
-                status.AccountCloser += parameters.AccountCloser;
-            }, parameters.Id, acc => acc.Close());
-        }
-
-        public void PutAmount(PutAccountParameters parameters)
-        {
-            ExecuteOnAccount(status =>
-            {
-                status.PutAccount += parameters.PutAccount;
-            }, parameters.Id, acc => acc.Put(parameters.Amount));
-        }
-
-        public void WithdrawAccaunt(WithdrawAccountParametrs parameters)
-        {
-            ExecuteOnAccount(status =>
-            {
-                status.WithdrawAccount += parameters.WithdrawAccount;
-            }, parameters.Id, acc => acc.Withdraw(parameters.Amount));
-        }
-
-        public void SkipDay(SkipDayAccountParameters parametrs)
-        {
-            CalculationPercent(_accounts);
-            if (_accounts.Count < 0)
-            {
-                throw new InvalidOperationException("Sorry, our bank has nothing to work with yet");
-            }
-            var acc = _accounts[0];
-            acc.Skip();
 
         }
 
-        private void AssertValidId(int Id)
-        {
-            if (Id < 0 || Id >= _accounts.Count)
-            {
-                throw new InvalidOperationException("An account with this number does not exist");
-            }
-        }
-
-        private void ExecuteOnAccount(Action<T> status, int accountId, Action<T> action)
-        {
-            AssertValidId(accountId);
-            var account = _accounts[accountId];
-            action(account);
-            status(account);
-            _accounts.RemoveAt(accountId);
-            _accounts.Insert(accountId, account);
-            CalculationPercent(_accounts);
-        }
-
-        private void CreateAccount(AccountStatus accountStatus, Func<T> creator)
+        private void CreateAccount(AccountStatus accountNotify, Func<T> creator)
         {
             var account = creator();
-            account.Created += accountStatus;
+            account.Notify += accountNotify;
             account.Open();
+
             _accounts.Add(account);
         }
-
-        // я искал как добавить к ForEach параметры поисканужного элемнта
-        // при этом не использовать if, чисто методами "листа" но получилалось более громоздко
-        private void CalculationPercent(List<T> accounts)
+        public void Withdraw(int id, decimal amount)
         {
-            accounts.ForEach(x => PernissionToCredit(x));
+            AssertValidId(id--);
+            _accounts[id].Withdraw(amount);
         }
 
-        private void PernissionToCredit(T credit)
+        private void AssertValidId(int id)
         {
-            if (credit.Type == AccountType.Deposit && credit._state == AccountState.Opened)
+            if (id < 1 || id > _accounts.Count)
             {
-                credit.PaymentAmount();
+                throw new InvalidOperationException("Not valid Id");
+            }
+        }
+
+        public void Put(int id, decimal amount)
+        {
+            AssertValidId(id--);
+            _accounts[id].Put(amount);
+        }
+
+        public void CloseAccount(int id)
+        {
+            AssertValidId(id--);
+            _accounts[id].Close();
+        }
+
+        public void DisplayAccounts()
+        {
+            foreach (var item in _accounts)
+            {
+                _writeOutput?.Invoke($"{item}");
+            }
+        }
+        public void IncrementDays()
+        {
+            foreach (var item in _accounts)
+            {
+                item.IncrementDays();
             }
         }
     }

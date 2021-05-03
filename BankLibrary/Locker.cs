@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace BankLibrary
 {
-    public class SkipDayParametrs
+    class Locker
     {
-        public AccountStatus SkipDay { get; set; }
     }
 }

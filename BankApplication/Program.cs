@@ -122,7 +122,7 @@ namespace BankApplication
 
         private static void SkipDay()
         {
-            _bank.SkipDay(new SkipDayParametrs { });
+            _bank.SkipDay(new SkipDayParameters { });
         }
 
         private static void NotifyAccountCreated(string message)
