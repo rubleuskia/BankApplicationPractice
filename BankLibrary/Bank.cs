@@ -3,28 +3,6 @@ using System.Collections.Generic;
 
 namespace BankLibrary
 {
-    public class Locker
-    {
-        private object _data;
-        private string _keyword;
-        private int _id;
-        public void RemoveData()
-        {
-            _data = null;
-        }
-        public Locker(int id, string keyword, object data)
-        {
-            _id = id;
-            _keyword = keyword;
-            _data = data;
-        }
-        public int Id => _id;
-        public object Data => _data;
-        public bool Matches(int id, string keyword)
-        {
-            return id == _id && keyword.Equals(_keyword, StringComparison.Ordinal);
-        }
-    }
     public class Bank<T> where T : Account
     {
         private const string KgkPassPhrase = "CleanUp";
@@ -119,13 +97,6 @@ namespace BankLibrary
             _accounts[id].Close();
         }
 
-        public void DisplayAccounts()
-        {
-            foreach (var item in _accounts)
-            {
-                _writeOutput?.Invoke($"{item}");
-            }
-        }
         public void IncrementDays()
         {
             foreach (var item in _accounts)
